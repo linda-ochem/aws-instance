@@ -31,9 +31,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ./
-            git pull origin main  # Assuming you're pulling from your main branch
-            # Replace the following commands with your deployment commands
-            npm install
-            npm run build
-            # Restart your server or service if needed
+            sudo apt-get update
+            sudo apt-get install -y git
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
