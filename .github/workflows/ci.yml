@@ -31,17 +31,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            if [ -f /etc/debian_version ]; then
-              sudo apt-get update
-              sudo apt-get install -y git
-              curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-              sudo apt-get install -y nodejs
-            elif [ -f /etc/redhat-release ]; then
-              sudo yum update
-              sudo yum install -y git
-              curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
-              sudo yum install -y nodejs
-            else
-              echo "Unsupported Linux distribution."
-              exit 1
-            fi
+            sudo yum update -y
+            sudo yum install -y git
+            curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
+            sudo yum install -y nodejs
