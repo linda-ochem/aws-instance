@@ -1,0 +1,39 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Change this to your Node.js version
+
+      - name: Install dependencies
+        run: npm install  # Change this to your build script if needed
+
+      - name: Build
+        run: npm run build  # Change this to your build script if needed
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: 13.48.248.71
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ./
+            git pull origin main  # Assuming you're pulling from your main branch
+            # Replace the following commands with your deployment commands
+            npm install
+            npm run build
+            # Restart your server or service if needed
