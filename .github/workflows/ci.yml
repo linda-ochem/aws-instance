@@ -26,4 +26,5 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
+          eb init --platform Docker --region eu-north-1
           eb deploy test-beanstalk --region eu-north-1 --source .
