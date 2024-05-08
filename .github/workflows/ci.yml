@@ -28,4 +28,4 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy test-beanstalk --profile linda@wevesti.com --region eu-north-1 --verbose --deployment_package .
+          eb deploy test-beanstalk --profile linda@wevesti.com --region eu-north-1 --verbose --source .
