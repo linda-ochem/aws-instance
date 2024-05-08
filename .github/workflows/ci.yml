@@ -28,6 +28,6 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb init --profile linda@wevesti.com --region eu-north-1
+          eb init --profile default --region eu-north-1
 
-          eb deploy test-beanstalk --profile linda@wevesti.com --region eu-north-1 --verbose --source .
+          eb deploy test-beanstalk --profile default --region eu-north-1 --verbose --source .
