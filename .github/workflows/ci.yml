@@ -28,6 +28,6 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb init --profile default --region eu-north-1
+          eb init --profile default --region eu-north-1 --interactive
 
           eb deploy test-beanstalk --profile default --region eu-north-1 --verbose --source .
