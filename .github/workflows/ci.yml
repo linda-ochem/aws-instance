@@ -1,87 +1,77 @@
-name: Deploy to AWS EC2
+name: Deploy to AWS Elastic Beanstalk
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your main branch
 
 jobs:
   deploy:
-    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies and build
+      - name: Install AWS CLI
         run: |
-          npm install
-          npm run build
+          sudo apt-get update
+          sudo apt-get install -y awscli
 
-      - name: Deploy to EC2
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'build/*'
-          target: '/var/www/html'
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
 
-      - name: SSH into EC2 and restart server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            sudo systemctl restart apache2
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          eb deploy test-beanstalk --profile linda@wevesti.com --region eu-north-1 --verbose
 
 
 
-
-# name: Deploy to EC2
+# name: Deploy to AWS EC2
 
 # on:
 #   push:
 #     branches:
-#       - main  # Change this to your main branch
+#       - main
 
 # jobs:
 #   deploy:
+#     name: Deploy to EC2
 #     runs-on: ubuntu-latest
 
 #     steps:
 #       - name: Checkout code
 #         uses: actions/checkout@v2
 
-#       - name: Setup Node.js
+#       - name: Install Node.js
 #         uses: actions/setup-node@v2
 #         with:
-#           node-version: '14'  # Change this to your Node.js version
+#           node-version: '14'
 
-#       - name: Install dependencies
-#         run: npm install  # Change this to your build script if needed
-
-#       - name: Build
-#         run: npm run build  # Change this to your build script if needed
+#       - name: Install dependencies and build
+#         run: |
+#           npm install
+#           npm run build
 
 #       - name: Deploy to EC2
-#         uses: appleboy/ssh-action@master
+#         uses: appleboy/scp-action@master
 #         with:
 #           host: ${{ secrets.EC2_HOST }}
-#           username: ${{ EC2_USERNAME }}
+#           username: ${{ secrets.EC2_USERNAME }}
 #           key: ${{ secrets.SSH_PRIVATE_KEY }}
 #           source: 'build/*'
 #           target: '/var/www/html'
 
+#       - name: SSH into EC2 and restart server
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USERNAME }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
 #           script: |
-#             sudo yum update -y
-#             sudo yum install -y git
-#             curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
-#             sudo yum install -y nodejs
+#             sudo systemctl restart apache2
+
+
