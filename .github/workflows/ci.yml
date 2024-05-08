@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb init --platform Docker --region eu-north-
+          eb init --platform Docker --region eu-north-1
 
       - name: introduce delay
         run: |
