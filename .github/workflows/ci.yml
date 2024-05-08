@@ -28,5 +28,5 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb init --region eu-north-1
+          eb init --region eu-north-1 --application test-beanstalk
           eb deploy test-beanstalk --profile default --region eu-north-1 --verbose --source .
