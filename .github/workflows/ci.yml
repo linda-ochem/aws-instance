@@ -24,6 +24,7 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
+          wget https://github.com/linda-ochem/aws-instance/archive/refs/heads/main.zip -O github-source-bundle.zip
           aws elasticbeanstalk create-application-version \
             --application-name test-beanstalk \
             --version-label $GITHUB_SHA \
