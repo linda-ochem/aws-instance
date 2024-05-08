@@ -24,9 +24,34 @@ jobs:
       - name: Configure AWS credentials
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region YourRegion
 
+      
+      - name: Initialize Elastic Beanstalk
+        run: |
+          echo "Initializing Elastic Beanstalk..."
+          eb init --platform Docker --region eu-north-1
+          echo "Elastic Beanstalk initialization complete."
+
+      - name: Check if environment exists
+        id: check_environment
+        run: |
+          eb status my-test-beanstalk-env --region eu-north-1 > /dev/null 2>&1 || echo "::set-output name=environment_exists::false"
+
+      - name: Create Elastic Beanstalk environment
+        if: steps.check_environment.outputs.environment_exists == 'false'
+        run: |
+          echo "Creating Elastic Beanstalk environment..."
+          eb create my-test-beanstalk-env --region eu-north-1
+          echo "Elastic Beanstalk environment creation complete."
+
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb init --platform Docker --region eu-north-1
-          eb create my-test-beanstalk-env --region eu-north-1
-          eb deploy my-test-beanstalk-env --region eu-north-1 
+          echo "Deploying to Elastic Beanstalk..."
+          eb deploy --region eu-north-1
+          echo "Deployment to Elastic Beanstalk complete."
+
+      # - name: Deploy to Elastic Beanstalk
+      #   run: |
+      #     eb init --platform Docker --region eu-north-1
+      #     eb create my-test-beanstalk-env --region eu-north-1
+      #     eb deploy my-test-beanstalk-env --region eu-north-1 
           
