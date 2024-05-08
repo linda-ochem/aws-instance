@@ -3,30 +3,40 @@ name: Deploy to AWS Elastic Beanstalk
 on:
   push:
     branches:
-      - main  # Change this to your main branch
+      - main
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install AWS CLI and Elastic Beanstalk CLI
+      - name: Install AWS CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
-          sudo apt-get install -y python3-pip
-          pip3 install --user --upgrade awsebcli
 
       - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region ${{ secrets.AWS_REGION }}
+        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region YourRegion
 
       - name: Deploy to Elastic Beanstalk
         run: |
-         GIT_TERMINAL_PROMPT=0 eb init test-beanstalk --region eu-north-1  
-         eb deploy test-beanstalk --profile default --region eu-north-1 --verbose --source .
+          aws elasticbeanstalk create-application-version \
+            --application-name test-beanstalk \
+            --version-label $GITHUB_SHA \
+            --source-bundle S3Bucket=elasticbeanstalk-source-bundle,S3Key=app.zip \
+            --region eu-north-1
+
+          aws elasticbeanstalk update-environment \
+            --application-name test-beanstalk \
+            --environment-name Test-beanstalk-env \
+            --version-label $GITHUB_SHA \
+            --region eu-north-1 \
+            --solution-stack-name "64bit Amazon Linux 2 v3.4.4 running Node.js 14"
+
+          aws elasticbeanstalk wait environment-healthy \
+            --environment-name Test-beanstalk-env \
+            --region eu-north-1
