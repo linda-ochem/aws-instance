@@ -27,7 +27,7 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name test-beanstalk \
             --version-label $GITHUB_SHA \
-            --source-bundle S3Bucket=elasticbeanstalk-source-bundle,S3Key=app.zip \
+            --source-bundle S3Bucket=elasticbeanstalk-source-bundle,S3Key=github-source-bundle.zip \
             --region eu-north-1
 
           aws elasticbeanstalk update-environment \
