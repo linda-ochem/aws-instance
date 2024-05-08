@@ -13,10 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install AWS CLI
+      - name: Install AWS CLI and Elastic Beanstalk CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
+          sudo apt-get install -y python3-pip
+          pip3 install --user --upgrade awsebcli
 
       - name: Configure AWS credentials
         run: |
@@ -26,52 +28,4 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy test-beanstalk --profile linda@wevesti.com --region eu-north-1 --verbose
-
-
-
-# name: Deploy to AWS EC2
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   deploy:
-#     name: Deploy to EC2
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-
-#       - name: Install Node.js
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: '14'
-
-#       - name: Install dependencies and build
-#         run: |
-#           npm install
-#           npm run build
-
-#       - name: Deploy to EC2
-#         uses: appleboy/scp-action@master
-#         with:
-#           host: ${{ secrets.EC2_HOST }}
-#           username: ${{ secrets.EC2_USERNAME }}
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           source: 'build/*'
-#           target: '/var/www/html'
-
-#       - name: SSH into EC2 and restart server
-#         uses: appleboy/ssh-action@master
-#         with:
-#           host: ${{ secrets.EC2_HOST }}
-#           username: ${{ secrets.EC2_USERNAME }}
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           script: |
-#             sudo systemctl restart apache2
-
-
+          eb deploy test-beanstalk --profile linda@wevesti.com --region *** --verbose
